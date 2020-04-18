@@ -34,11 +34,21 @@ export class JuegoComponent implements OnInit {
   }
 
   inicializarJuego(numJugadores = 2) {
+
     this.puntosJugadores = [];
     deck = this.crearDeck();
+
     for (let i = 0; i < numJugadores; i++) {
       this.puntosJugadores.push(0);
+      const divCartasJugadores = document.querySelectorAll('.divCartas');
+      divCartasJugadores[i].innerHTML = ' ';
     }
+
+    this.esTurnoComputadora = false;
+
+    const parrafoMensajeResultado = document.querySelector('#resultado');
+    parrafoMensajeResultado.innerHTML = ' ';
+
   }
 
   crearDeck() {
@@ -135,10 +145,6 @@ export class JuegoComponent implements OnInit {
     }
   }
 
-  determinarGanador(ptsJugador: number, ptsComputadora: number) {
-
-  }
-
   mostrarResultadosJuego(ptsJugador: number, ptsComputadora: number) {
     let msg: string;
 
@@ -173,17 +179,6 @@ export class JuegoComponent implements OnInit {
 
   btnNuevoJuego() {
     this.inicializarJuego();
-
-    this.esTurnoComputadora = false;
-
-    const divCartasJugadores = document.querySelector('#jugador-cartas');
-    divCartasJugadores.innerHTML = ' ';
-
-    const divCartasComputadora = document.querySelector('#computadora-cartas');
-    divCartasComputadora.innerHTML = ' ';
-
-    const parrafoMensajeResultado = document.querySelector('#resultado');
-    parrafoMensajeResultado.innerHTML = ' ';
   }
 
   guardarStorage() {
