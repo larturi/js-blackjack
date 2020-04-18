@@ -1,0 +1,47 @@
+<div class="col">
+
+  <div class="row mt-4 ml-3 mb-2">
+    <h5>Jugador: {{ puntosJugadores[0] }}</h5>
+  </div>
+
+  <div class="row mb-4 divCartas" id="jugador-cartas"></div>
+
+
+  <div class="row mt-5 ml-3 mb-2">
+    <h5>Computadora: {{ puntosJugadores[1] }}</h5>
+  </div>
+
+  <div class="row divCartas" id="computadora-cartas"></div>
+
+  <div class="row msg-resultado">
+    <p id="resultado"></p>
+  </div>
+
+</div>
+
+<footer class="footer">
+
+  <div class="col container text-center">
+
+      <button class="btn btn-light"
+              (click)="btnNuevoJuego()">
+        Jugar
+      </button>
+
+      <button (click)="btnJugadorPideCarta()"
+              [disabled]="puntosJugadores[0] > 20 || esTurnoComputadora"
+              class="btn btn-light btn-center">
+          Pedir Carta
+      </button>
+
+      <button class="btn btn-light"
+              (click)="turnoComputadora(puntosJugadores[0])"
+              [disabled]="puntosJugadores[0] > 20 || esTurnoComputadora">
+        Basta
+      </button>
+
+  </div>
+
+</footer>
+
+

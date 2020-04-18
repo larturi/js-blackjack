@@ -1,1 +1,141 @@
 /* You can add global styles to this file, and also import other style files */
+
+html, body {
+   margin: 0;
+   background-color: #1eb2a6;
+   color: white;
+}
+
+.navbar-light .navbar-brand {
+  color: white
+}
+
+.btn {
+  width: 142px;
+  color: #f67575;
+  margin-bottom: 3px;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  line-height: 100px;
+  background-color: #f67575;
+}
+
+.btn-center {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.carta {
+  position: relative;
+  width: 105px;
+  left: 100px;
+  margin-left: -60px;
+}
+
+#computadora-cartas, #jugador-cartas {
+  height: 140px;
+}
+
+.navbar {
+  background-color: #004d40;
+}
+
+.col {
+  width: 528px;
+  margin: 0 auto;
+}
+
+
+/************************ Responsive ************************/
+
+@media only screen and (max-width: 480px) {
+
+  .btn {
+    height: 40px;
+    width: 100px;
+    color: #f67575;
+    font-size: 12px;
+  }
+
+  .btn-center {
+    margin-left: 8px;
+    margin-right: 8px;
+  }
+
+  .carta {
+    position: relative;
+    width: 110px;
+    left: 100px;
+    margin-left: -60px;
+  }
+
+}
+
+@media only screen and (max-width: 350px) {
+
+  .btn {
+    height: 47px;
+    width: 91px;
+    color: #f67575;
+    font-size: 11px;
+  }
+
+  .btn-center {
+    margin-left: 8px;
+    margin-right: 8px;
+  }
+
+  .carta {
+    position: relative;
+    width: 65px;
+    left: 100px;
+    margin-left: -40px;
+  }
+
+  #computadora-cartas, #jugador-cartas {
+    height: 100px;
+    margin-left: -42px;
+  }
+
+  .mt-5, .my-5 {
+    margin-top: -7px!important;
+  }
+
+}
+
+@media only screen and (max-width: 320px) {
+
+  .btn {
+    height: 49px;
+    width: 64px;
+    color: #f67575;
+    font-size: 13px;
+  }
+
+  .btn-center {
+    margin-left: 8px;
+    margin-right: 8px;
+  }
+
+  .carta {
+    position: relative;
+    width: 65px;
+    left: 100px;
+    margin-left: -40px;
+  }
+
+  #computadora-cartas, #jugador-cartas {
+    height: 100px;
+    margin-left: -42px;
+  }
+
+  .mt-5, .my-5 {
+    margin-top: -7px!important;
+  }
+
+}
+
