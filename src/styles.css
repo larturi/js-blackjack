@@ -53,6 +53,10 @@ a {
   margin: 0 auto;
 }
 
+.swal2-container {
+  opacity: 0.92!important;
+}
+
 /************************ Reglamento ************************/
 
 

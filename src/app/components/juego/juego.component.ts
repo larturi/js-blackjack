@@ -231,15 +231,22 @@ export class JuegoComponent implements OnInit {
     }
 
     Swal.fire({
-      title: msg,
+      title: `<h5>${msg}</h5>`,
       html:
-        '<br>Historial<br><br> ' +
-        `<p>Jugador: ${this.historial.jugador} <br>
+        `<p style="font-size:14px">
+            Jugador: ${this.historial.jugador} <br>
             Computadora: ${this.historial.computadora} <br>
             Empate: ${this.historial.empate}
          </p>`,
       focusConfirm: false,
-      allowOutsideClick: false
+      width: 300,
+      allowOutsideClick: false,
+      showClass: {
+        popup: 'animated fadeInDown',
+      },
+      hideClass: {
+        popup: 'animated fadeOutUp'
+      }
   });
 
   }
