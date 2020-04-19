@@ -87,6 +87,9 @@ export class JuegoComponent implements OnInit {
     // eturn ['4S', '10S', '3C', 'AH', 'AC', '10C', '10S', '10S'];
     // return ['4S', '10S', '3C', 'AH', 'AC', '10C', 'AS', '10S'];
     // return ['4S', '8S', '8C', '7H', '3C', '2C', '9S', '9S'];
+    // return ['4S', '8S', '9C', 'KH', 'AC', '5C', '4S', 'QS'];
+    // return ['9S', 'KS', 'AC', '8H', '8C', '3C', 'KS', '3S'];
+    // return ['9S', 'KS', 'KC', 'AH', '5C', '9C', '10S', '9S'];
     return _.shuffle(deck);
   }
 
@@ -114,19 +117,17 @@ export class JuegoComponent implements OnInit {
 
     const valCarta = this.valorCarta(carta);
 
-    if (valCarta === 11 && this.puntosJugadores[turno] >= 11) {
+    const ases = this.contarAses(this.manosJugadores[turno]);
+
+    if (valCarta === 11 && this.puntosJugadores[turno] + 11 > 21) {
        this.puntosJugadores[turno] = this.puntosJugadores[turno] + 1;
-    } else if (valCarta === 11 && this.puntosJugadores[turno] < 11) {
+    } else if (valCarta === 11 && this.puntosJugadores[turno] + 11 <= 21) {
        this.puntosJugadores[turno] = this.puntosJugadores[turno] + 11;
     } else {
       this.puntosJugadores[turno] = this.puntosJugadores[turno] + valCarta;
     }
 
-    const ases = this.contarAses(this.manosJugadores[turno]);
-
     if (ases > 0 && this.puntosJugadores[turno] > 21) {
-        this.puntosJugadores[turno] = this.puntosJugadores[turno] - 10;
-
         // Reemplazo el 11 por 1
         const index = this.manosJugadores[turno].indexOf(11);
         if (index !== -1) {

@@ -53,6 +53,29 @@ a {
   margin: 0 auto;
 }
 
+/************************ Reglamento ************************/
+
+
+.reglamento {
+  line-height: 19pt;
+  margin-left: 12px;
+}
+
+.reglamento ul {
+  padding-left: 20px;
+  /* list-style-type: none; */
+}
+
+.reglamento li {
+  margin-bottom: 4px;
+}
+
+.reglamento.col {
+  width: 600px;
+  margin-left: 0px;
+}
+
+
 
 /************************ Responsive ************************/
 
