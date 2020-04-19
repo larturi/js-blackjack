@@ -3,16 +3,6 @@ import * as _ from 'underscore';
 import { stringify } from 'querystring';
 import Swal from 'sweetalert2';
 
-// 2C = Two Of Clubs (Treboles)
-// 2D = Two Of Diamonds (Diamantes)
-// 2H = Two Of Hearts (Corazones)
-// 2S = Two Of Spades (Espadas)
-
-// El 1 vale 1 u 11 dependiendo la jugada
-// Blackjack es con dos cartas, le gana a 21 con tres cartas
-// La banca solo puede pedir hasta llegar a 17
-// -- Le da dos cartas al jugador y una a la banca --
-
 let deck = [];
 
 const tipos = ['C', 'D', 'H', 'S'];
@@ -42,9 +32,11 @@ export class JuegoComponent implements OnInit {
   inicializarJuego(numJugadores = 2) {
 
     this.puntosJugadores = [];
-    deck = this.crearDeck();
+    deck = this.crearDeck(4);
 
     this.manosJugadores = [];
+    this.manosJugadores[0] = [];
+    this.manosJugadores[1] = [];
 
     for (let i = 0; i < numJugadores; i++) {
       this.puntosJugadores.push(0);
@@ -54,35 +46,47 @@ export class JuegoComponent implements OnInit {
 
     this.esTurnoComputadora = false;
 
-    const parrafoMensajeResultado = document.querySelector('#resultado');
-    parrafoMensajeResultado.innerHTML = ' ';
-
     // Primeras dos cartas del jugador
     this.btnJugadorPideCarta();
     this.btnJugadorPideCarta();
 
-    // Primera carta de la computadora
-    const carta = this.pedirCarta();
-    this.acumularPuntos(carta, this.puntosJugadores.length - 1);
-    this.crearCarta(carta, this.puntosJugadores.length - 1);
+    if (!this.esBlackJack(this.manosJugadores[0])) {
+      // Primera carta de la computadora
+      const carta = this.pedirCarta();
+      this.acumularPuntos(carta, this.puntosJugadores.length - 1);
+      this.crearCarta(carta, this.puntosJugadores.length - 1);
+      this.manosJugadores[this.puntosJugadores.length - 1].push(this.valorCarta(carta));
+    }
+
   }
 
-  crearDeck() {
+  crearDeck(cantidadMazos) {
     deck = [];
-    for (let i = 2; i <= 10; i++) {
-      for (const tipo of tipos) {
-        deck.push(i + tipo);
-        // Cargo las cartas la primera vez para que queden en memoria y no haya lag
-        const imgCarta = document.createElement('img');
-        imgCarta.src = `assets/cartas-min/${ i + tipo }-min.png`;
+
+    for (let j = 0; j < cantidadMazos; j++) {
+
+      for (let i = 2; i <= 10; i++) {
+        for (const tipo of tipos) {
+          deck.push(i + tipo);
+          // Cargo las cartas la primera vez para que queden en memoria y no haya lag
+          const imgCarta = document.createElement('img');
+          imgCarta.src = `assets/cartas-min/${ i + tipo }-min.png`;
+        }
       }
+
+      for (const tipo of tipos) {
+        for (const esp of especiales) {
+          deck.push(esp + tipo);
+        }
+      }
+
     }
 
-    for (const tipo of tipos) {
-      for (const esp of especiales) {
-        deck.push(esp + tipo);
-      }
-    }
+    // return ['4S', '10S', '3C', '10H', '8C', '4C', '10S', 'AS'];
+    // return ['4S', '10S', '3C', '9H', '8C', '4C', '10S', 'AS'];
+    // eturn ['4S', '10S', '3C', 'AH', 'AC', '10C', '10S', '10S'];
+    // return ['4S', '10S', '3C', 'AH', 'AC', '10C', 'AS', '10S'];
+    // return ['4S', '8S', '8C', '7H', '3C', '2C', '9S', '9S'];
     return _.shuffle(deck);
   }
 
@@ -118,6 +122,18 @@ export class JuegoComponent implements OnInit {
       this.puntosJugadores[turno] = this.puntosJugadores[turno] + valCarta;
     }
 
+    const ases = this.contarAses(this.manosJugadores[turno]);
+
+    if (ases > 0 && this.puntosJugadores[turno] > 21) {
+        this.puntosJugadores[turno] = this.puntosJugadores[turno] - 10;
+
+        // Reemplazo el 11 por 1
+        const index = this.manosJugadores[turno].indexOf(11);
+        if (index !== -1) {
+          this.manosJugadores[turno][index] = 1;
+        }
+    }
+
     return this.puntosJugadores[turno];
 
   }
@@ -133,26 +149,19 @@ export class JuegoComponent implements OnInit {
   turnoComputadora( puntosMinimos: number ) {
 
     this.esTurnoComputadora = true;
-    let flagExit = false;
-    let i = 0;
 
-    do {
-
-        i++;
+    while ( this.puntosJugadores[this.puntosJugadores.length - 1] < puntosMinimos &&
+            this.puntosJugadores[this.puntosJugadores.length - 1] < 17 && puntosMinimos <= 21 ) {
 
         const carta = this.pedirCarta();
+
+        this.manosJugadores[this.puntosJugadores.length - 1].push(this.valorCarta(carta));
+
         this.acumularPuntos(carta, this.puntosJugadores.length - 1);
+
         this.crearCarta(carta, this.puntosJugadores.length - 1);
 
-        if (puntosMinimos > 21 || this.puntosJugadores[this.puntosJugadores.length - 1] >= 17) {
-          console.log('puntosMinimos > 21 || ptsComputadora >= 17');
-          flagExit = true;
-        }
-
-        console.log('i = ' + i, ' Pts PC = ' + this.puntosJugadores[this.puntosJugadores.length - 1], 'Pts Jugador = ' + puntosMinimos);
-
-      } while ( this.puntosJugadores[this.puntosJugadores.length - 1] <= puntosMinimos &&
-                this.puntosJugadores[this.puntosJugadores.length - 1] <= 17 );
+    }
 
     const msg = this.mostrarResultadosJuego(puntosMinimos, this.puntosJugadores[this.puntosJugadores.length - 1]);
 
@@ -171,9 +180,12 @@ export class JuegoComponent implements OnInit {
 
   btnJugadorPideCarta() {
     const carta = this.pedirCarta();
+    this.manosJugadores[0].push(this.valorCarta(carta));
+
     const puntosJugador = this.acumularPuntos(carta, 0);
 
     this.crearCarta(carta, 0);
+
 
     if (puntosJugador === 21) {
        this.turnoComputadora(puntosJugador);
@@ -185,37 +197,56 @@ export class JuegoComponent implements OnInit {
   }
 
   mostrarResultadosJuego(ptsJugador: number, ptsComputadora: number) {
-    let msg: string;
 
+    // Se pasa el jugador, gana la computadora
     if (ptsJugador > 21) {
-       msg = 'Computadora Gana 😝';
        this.historial.computadora++;
        this.guardarStorage();
-       return msg;
+       return 'Computadora Gana 😝';
     }
 
+    // Se pasa la computadora, gana el jugador
     if (ptsComputadora > 21) {
-      msg = 'Jugador Gana 😎';
       this.historial.jugador++;
       this.guardarStorage();
-      return msg;
+      return 'Jugador Gana 😎';
+    }
+
+    // Blackjack jugador, computadora 21, gana jugador
+    if (this.esBlackJack(this.manosJugadores[0]) && ptsComputadora === 21 && !this.esBlackJack(this.manosJugadores[1])) {
+      this.historial.computadora++;
+      this.guardarStorage();
+      return 'Blackjack! Jugador Gana 😎';
+    }
+
+    // Blackjack computadora, jugador 21, gana computadora
+    if (this.esBlackJack(this.manosJugadores[1]) && ptsJugador === 21 && !this.esBlackJack(this.manosJugadores[0])) {
+      this.historial.computadora++;
+      this.guardarStorage();
+      return 'Blackjack! Computadora Gana 😝';
+    }
+
+    // Blackjack computadora y jugador 21, empate
+    if (this.esBlackJack(this.manosJugadores[0]) && this.esBlackJack(this.manosJugadores[1])) {
+      this.historial.empate++;
+      this.guardarStorage();
+      return 'Empate 😐';
     }
 
     if (ptsJugador > ptsComputadora) {
-        msg = 'Jugador Gana 😎';
         this.historial.jugador++;
         this.guardarStorage();
+        return 'Jugador Gana 😎';
     } else if (ptsJugador < ptsComputadora) {
-        msg = 'Computadora Gana 😝';
         this.historial.computadora++;
         this.guardarStorage();
+        return 'Computadora Gana 😝';
     } else if (ptsJugador === ptsComputadora) {
         this.historial.empate++;
         this.guardarStorage();
-        msg = 'Empate 😐';
+        return 'Empate 😐';
     }
 
-    return msg;
   }
 
   btnNuevoJuego() {
@@ -224,6 +255,23 @@ export class JuegoComponent implements OnInit {
 
   guardarStorage() {
     localStorage.setItem('historial', JSON.stringify(this.historial));
+  }
+
+  contarAses(array) {
+
+    let cant = 0;
+    // tslint:disable-next-line: prefer-for-of
+    for (let i = 0; i < array.length; i++) {
+      if (array[i] === 11) {
+        cant++;
+      }
+    }
+
+    return cant;
+  }
+
+  esBlackJack(array) {
+    return (array.length === 2 && array.reduce((a, b) => a + b, 0) === 21);
   }
 
 }
