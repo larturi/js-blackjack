@@ -24,20 +24,21 @@
   <div class="col container text-center">
 
       <button class="btn btn-light"
-              (click)="btnNuevoJuego()">
-        Jugar
+              (click)="btnNuevoJuego()"
+              [disabled]="!esTurnoComputadora">
+        Iniciar
       </button>
 
       <button (click)="btnJugadorPideCarta()"
               [disabled]="puntosJugadores[0] > 20 || esTurnoComputadora"
               class="btn btn-light btn-center">
-          Pedir Carta
+          Pedir
       </button>
 
       <button class="btn btn-light"
               (click)="turnoComputadora(puntosJugadores[0])"
               [disabled]="puntosJugadores[0] > 20 || esTurnoComputadora">
-        Basta
+        Plantarse
       </button>
 
   </div>

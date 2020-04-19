@@ -10,6 +10,10 @@ html, body {
   color: white
 }
 
+a {
+  color: white !important;
+}
+
 .btn {
   width: 142px;
   color: #f67575;
@@ -139,3 +143,90 @@ html, body {
 
 }
 
+@media only screen and (max-height: 520px) {
+
+  .btn {
+    height: 50px;
+    width: 75px;
+    color: #f67575;
+    font-size: 13px;
+    margin-bottom: 35px;
+  }
+
+  .btn-center {
+    margin-left: 8px;
+    margin-right: 8px;
+  }
+
+  .carta {
+    position: relative;
+    width: 65px;
+    left: 100px;
+    margin-left: -40px;
+  }
+
+  #computadora-cartas, #jugador-cartas {
+    height: 100px;
+    margin-left: -42px;
+  }
+
+  .mt-5, .my-5 {
+    margin-top: -7px!important;
+  }
+
+  .col {
+    height: 70px;
+  }
+
+}
+
+
+@media only screen and (max-height: 475px) {
+
+  .btn {
+    height: 50px;
+    width: 75px;
+    color: #f67575;
+    font-size: 13px;
+    margin-bottom: 35px;
+  }
+
+  .btn-center {
+    margin-left: 8px;
+    margin-right: 8px;
+  }
+
+  .carta {
+    position: relative;
+    width: 65px;
+    left: 100px;
+    margin-left: -40px;
+  }
+
+  #computadora-cartas, #jugador-cartas {
+    height: 100px;
+    margin-left: -42px;
+  }
+
+  .mt-5, .my-5 {
+    margin-top: -7px!important;
+  }
+
+  .col {
+    height: 70px;
+  }
+
+  .navbar {
+    height: 35px;
+  }
+
+  .navbar-brand {
+    font-size: 15px !important;
+    padding: 0 !important;
+  }
+
+  h5 {
+    font-size: 14px;
+  }
+
+}

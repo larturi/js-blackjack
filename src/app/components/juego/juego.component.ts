@@ -8,6 +8,11 @@ import Swal from 'sweetalert2';
 // 2H = Two Of Hearts (Corazones)
 // 2S = Two Of Spades (Espadas)
 
+// El 1 vale 1 u 11 dependiendo la jugada
+// Blackjack es con dos cartas, le gana a 21 con tres cartas
+// La banca solo puede pedir hasta llegar a 17
+// -- Le da dos cartas al jugador y una a la banca --
+
 let deck = [];
 
 const tipos = ['C', 'D', 'H', 'S'];
@@ -19,9 +24,10 @@ const especiales = ['A', 'J', 'Q', 'K'];
 export class JuegoComponent implements OnInit {
 
   puntosJugadores = [];
+  manosJugadores = [];
   esTurnoComputadora = false;
 
-  historial = {jugador: 0, computadora: 0};
+  historial = {jugador: 0, computadora: 0, empate: 0};
 
   constructor() {
     if (localStorage.getItem('historial')) {
@@ -38,6 +44,8 @@ export class JuegoComponent implements OnInit {
     this.puntosJugadores = [];
     deck = this.crearDeck();
 
+    this.manosJugadores = [];
+
     for (let i = 0; i < numJugadores; i++) {
       this.puntosJugadores.push(0);
       const divCartasJugadores = document.querySelectorAll('.divCartas');
@@ -49,6 +57,14 @@ export class JuegoComponent implements OnInit {
     const parrafoMensajeResultado = document.querySelector('#resultado');
     parrafoMensajeResultado.innerHTML = ' ';
 
+    // Primeras dos cartas del jugador
+    this.btnJugadorPideCarta();
+    this.btnJugadorPideCarta();
+
+    // Primera carta de la computadora
+    const carta = this.pedirCarta();
+    this.acumularPuntos(carta, this.puntosJugadores.length - 1);
+    this.crearCarta(carta, this.puntosJugadores.length - 1);
   }
 
   crearDeck() {
@@ -91,8 +107,19 @@ export class JuegoComponent implements OnInit {
 
   // Turno: 0 = primer jugador ... n: computadora
   acumularPuntos(carta, turno: number) {
-    this.puntosJugadores[turno] = this.puntosJugadores[turno] + this.valorCarta(carta);
+
+    const valCarta = this.valorCarta(carta);
+
+    if (valCarta === 11 && this.puntosJugadores[turno] >= 11) {
+       this.puntosJugadores[turno] = this.puntosJugadores[turno] + 1;
+    } else if (valCarta === 11 && this.puntosJugadores[turno] < 11) {
+       this.puntosJugadores[turno] = this.puntosJugadores[turno] + 11;
+    } else {
+      this.puntosJugadores[turno] = this.puntosJugadores[turno] + valCarta;
+    }
+
     return this.puntosJugadores[turno];
+
   }
 
   crearCarta(carta, turno) {
@@ -104,30 +131,42 @@ export class JuegoComponent implements OnInit {
   }
 
   turnoComputadora( puntosMinimos: number ) {
-      do {
 
-        this.esTurnoComputadora = true;
+    this.esTurnoComputadora = true;
+    let flagExit = false;
+    let i = 0;
+
+    do {
+
+        i++;
+
         const carta = this.pedirCarta();
         this.acumularPuntos(carta, this.puntosJugadores.length - 1);
-
         this.crearCarta(carta, this.puntosJugadores.length - 1);
 
-        if (puntosMinimos > 21) {
-          break;
+        if (puntosMinimos > 21 || this.puntosJugadores[this.puntosJugadores.length - 1] >= 17) {
+          console.log('puntosMinimos > 21 || ptsComputadora >= 17');
+          flagExit = true;
         }
 
-      } while ( (this.puntosJugadores[this.puntosJugadores.length - 1] <= puntosMinimos) && (puntosMinimos <= 21) );
+        console.log('i = ' + i, ' Pts PC = ' + this.puntosJugadores[this.puntosJugadores.length - 1], 'Pts Jugador = ' + puntosMinimos);
 
-      const msg = this.mostrarResultadosJuego(puntosMinimos, this.puntosJugadores[this.puntosJugadores.length - 1]);
+      } while ( this.puntosJugadores[this.puntosJugadores.length - 1] <= puntosMinimos &&
+                this.puntosJugadores[this.puntosJugadores.length - 1] <= 17 );
 
-      Swal.fire({
+    const msg = this.mostrarResultadosJuego(puntosMinimos, this.puntosJugadores[this.puntosJugadores.length - 1]);
+
+    Swal.fire({
         title: msg,
         html:
           '<br>Historial<br><br> ' +
-          `<p>Jugador: ${this.historial.jugador} <br> Computadora: ${this.historial.computadora}</p>`,
+          `<p>Jugador: ${this.historial.jugador} <br>
+              Computadora: ${this.historial.computadora} <br>
+              Empate: ${this.historial.empate}
+           </p>`,
         focusConfirm: false,
         allowOutsideClick: false
-      });
+    });
   }
 
   btnJugadorPideCarta() {
@@ -171,7 +210,9 @@ export class JuegoComponent implements OnInit {
         this.historial.computadora++;
         this.guardarStorage();
     } else if (ptsJugador === ptsComputadora) {
-      msg = 'EMPATE';
+        this.historial.empate++;
+        this.guardarStorage();
+        msg = 'Empate 😐';
     }
 
     return msg;
